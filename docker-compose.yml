@@ -1,0 +1,57 @@
+version: "3"
+services:
+  sample-app:
+    container_name: react-docker
+    build:
+      context: ./react-client
+      dockerfile: Dockerfile
+    volumes:
+      - "./react-client:/usr/src/app"
+      # - '/usr/src/app/node_modules'
+    ports:
+      - "3000:3000"
+    environment:
+      - NODE_ENV=${NODE_ENV}
+    stdin_open: true
+    # networks:
+    #   - webappnetwork
+
+  # sample-api:
+  #   container_name: express-docker
+  #   build:
+  #     context: ./express-server
+  #     dockerfile: Dockerfile
+  #   volumes:
+  #     - "./express-server:/api"
+  #   ports:
+  #     - "9000:9000"
+  #   links:
+  #     - mongo
+  #   stdin_open: true
+  #   depends_on:
+  #     - mongo
+    # networks:
+    #   - webappnetwork
+  
+  app:
+    container_name: express-docker
+    restart: always
+    build:
+      context: ./express-server
+      dockerfile: Dockerfile
+    ports:
+      - '9000:9000' 
+    links: 
+      - mongo
+
+  mongo:
+    container_name: mongo
+    image: mongo
+    ports:
+      - "27017:27017"
+    # networks:
+    #   - webappnetwork
+
+# networks:
+#   webappnetwork:
+#     driver: bridge
